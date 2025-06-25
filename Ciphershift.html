@@ -1,0 +1,102 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ASCII-Based Custom Text Encryptor/Decryptor</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 1rem;
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    label {
+      display: block;
+      margin: 0.5rem 0 0.2rem;
+    }
+    input, textarea, select, button {
+      width: 100%;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+    button {
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    #output {
+      background-color: #fff;
+      min-height: 4rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>ASCII-Based Custom Encryptor/Decryptor</h1>
+
+  <label for="mode">Mode:</label>
+  <select id="mode">
+    <option value="encrypt">Encrypt</option>
+    <option value="decrypt">Decrypt</option>
+  </select>
+
+  <label for="inputText">Enter text:</label>
+  <textarea id="inputText" rows="4" placeholder="Type your message here..."></textarea>
+
+  <label for="multiplier">Multiplier (N multiplier):</label>
+  <input type="number" id="multiplier" value="1" />
+
+  <label for="offset">Offset (normal shift number):</label>
+  <input type="number" id="offset" value="0" />
+
+  <button id="processBtn">Run</button>
+
+  <label for="output">Result:</label>
+  <textarea id="output" readonly></textarea>
+
+  <script>
+    function shiftCharASCII(char, shift) {
+      const code = char.charCodeAt(0);
+      if (code >= 32 && code <= 126) {
+        const printableCount = 95;
+        const normalized = code - 32;
+        const wrapped = ((normalized + shift) % printableCount + printableCount) % printableCount;
+        return String.fromCharCode(wrapped + 32);
+      }
+      return char;
+    }
+
+    document.getElementById('processBtn').addEventListener('click', () => {
+      const text = document.getElementById('inputText').value;
+      const multiplier = parseInt(document.getElementById('multiplier').value, 10);
+      const offset = parseInt(document.getElementById('offset').value, 10);
+      const mode = document.getElementById('mode').value;
+
+      let result = '';
+
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        const N = i + 1;
+        const shift = (N * multiplier) + offset;
+        const direction = mode === 'decrypt' ? -shift : shift;
+        result += shiftCharASCII(char, direction);
+      }
+
+      document.getElementById('output').value = result;
+    });
+  </script>
+</body>
+</html>
